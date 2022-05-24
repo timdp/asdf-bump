@@ -22,7 +22,7 @@
     "test": "yarn run lint",
     "lint": "eslint \"**/*.js\"",
     "format": "prettier-eslint --write \"$PWD/**/*.js\"",
-    "postinstall": "husky install"
+    "prepare": "husky install"
   },
   "dependencies": {
     "ansi-colors": "^4.1.3",
