@@ -12,6 +12,9 @@
     "name": "Tim De Pauw",
     "url": "https://tmdpw.eu"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "bin": {
     "asdf-bump": "asdf-bump.js"
   },
