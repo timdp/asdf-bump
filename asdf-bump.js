@@ -120,10 +120,7 @@ const getToolsToUpdate = async (updatableTools) => {
   while (true) {
     const line = await prompt('Tools to update')
     choices = tokenize(line)
-    if (
-      choices != null &&
-      choices.every((toolName) => updatableTools.includes(toolName))
-    ) {
+    if (choices.every((toolName) => updatableTools.includes(toolName))) {
       break
     }
     console.log(ansiColors.red('Invalid tool name!'))
