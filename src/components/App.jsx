@@ -85,22 +85,30 @@ export const App = ({ allowUnstable }) => {
   }, [])
 
   useEffect(() => {
-    if (versionInfo != null) {
-      if (versionInfo.length === 0) {
-        setResultText('No tools configured.')
-      } else if (!updatesAvailable(versionInfo)) {
-        setResultText('All tools up to date.')
-      }
+    if (versionInfo == null) {
+      return
+    }
+    if (versionInfo.length === 0) {
+      setResultText('No tools configured.')
+      return
+    }
+    if (!updatesAvailable(versionInfo)) {
+      setResultText('All tools up to date.')
     }
   }, [versionInfo])
 
   useEffect(() => {
-    if (selectedVersions != null) {
-      const toolVersions = applySelectedVersions(versionInfo, selectedVersions)
-      writeToolVersions(toolVersions).then(() =>
-        setResultText('Update completed.')
-      )
+    if (selectedVersions == null) {
+      return
     }
+    if (Object.keys(selectedVersions).length === 0) {
+      setResultText('Nothing to update.')
+      return
+    }
+    const toolVersions = applySelectedVersions(versionInfo, selectedVersions)
+    writeToolVersions(toolVersions).then(() =>
+      setResultText('Update completed.')
+    )
   }, [selectedVersions])
 
   if (resultText != null) {
