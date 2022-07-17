@@ -2,7 +2,6 @@
   "name": "asdf-bump",
   "description": "Interactive upgrades for asdf.",
   "version": "0.1.2",
-  "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -13,34 +12,52 @@
     "url": "https://tmdpw.eu"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=16"
   },
   "bin": {
-    "asdf-bump": "asdf-bump.js"
+    "asdf-bump": "dist/asdf-bump.js"
   },
   "files": [
-    "asdf-bump.js"
+    "dist/"
   ],
   "scripts": {
     "test": "yarn run lint",
-    "lint": "eslint \"**/*.js\"",
-    "format": "prettier-eslint --write \"$PWD/**/*.js\"",
+    "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "format": "prettier-eslint --write \"$PWD/src/**/*.{js,jsx}\"",
+    "build": "yarn run clean && yarn run bundle",
+    "clean": "shx rm -rf dist",
+    "bundle": "esbuild src/cli.jsx --bundle --platform=node --external:\"./node_modules/*\" --sourcemap --outfile=dist/asdf-bump.js",
     "prepare": "husky install"
   },
   "dependencies": {
-    "ansi-colors": "^4.1.3",
-    "execa": "^6.1.0"
+    "execa": "^5.1.1",
+    "ink": "^3.2.0",
+    "ink-spinner": "^4.0.3",
+    "minimist": "^1.2.6",
+    "p-map": "^4.0.0",
+    "react": "^18.2.0",
+    "source-map-support": "^0.5.21",
+    "split-lines": "^2.1.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@babel/eslint-parser": "^7.18.2",
+    "@babel/preset-react": "^7.18.6",
+    "esbuild": "^0.14.49",
     "eslint": "^8.16.0",
     "eslint-config-standard": "^17.0.0",
+    "eslint-config-standard-jsx": "^11.0.0",
+    "eslint-config-standard-react": "^11.0.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.2.0",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^8.0.1",
     "lint-staged": "^12.4.1",
-    "prettier-eslint-cli": "^6.0.1"
+    "prettier-eslint-cli": "^6.0.1",
+    "shx": "^0.3.4"
   },
   "lint-staged": {
     "*.js": [

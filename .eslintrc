@@ -1,17 +1,20 @@
 {
   "root": true,
-  "extends": "standard",
+  "parser": "@babel/eslint-parser",
+  "extends": [
+    "standard",
+    "standard-jsx",
+    "standard-react"
+  ],
   "plugins": [
     "simple-import-sort"
   ],
   "rules": {
+    "react/prop-types": "off",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error"
   },
   "env": {
     "node": true
-  },
-  "ignorePatterns": [
-    "**/node_modules/*"
-  ]
+  }
 }
