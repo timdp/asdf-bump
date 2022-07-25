@@ -1,98 +1,88 @@
 import { Box, useInput } from 'ink'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Instructions } from './Instructions'
 import { ToolGridHeading } from './ToolGridHeading'
 import { ToolRow } from './ToolRow'
 
-const changeSelectedVersion = (
-  versionInfo,
-  activeIndex,
-  selectedVersions,
-  setSelectedVersions,
-  delta
+const isNotNullish = (value) => value != null
+
+const shiftIndex = (index, total, delta) => (index + delta + total) % total
+
+const buildAvailableVersions = ({
+  currentVersion,
+  latestCompatibleVersion,
+  latestVersion
+}) =>
+  [currentVersion, latestCompatibleVersion, latestVersion].filter(isNotNullish)
+
+const getSelectedVersion = (toolVersions, { toolName, currentVersion }) =>
+  toolVersions[toolName] ?? currentVersion
+
+const applyVersionSelection = (
+  toolVersions,
+  { toolName, currentVersion },
+  newVersion
 ) => {
-  const { toolName, currentVersion, latestCompatibleVersion, latestVersion } =
-    versionInfo[activeIndex]
-  const selectedVersion = selectedVersions[toolName] ?? currentVersion
-  const availableVersions = [currentVersion]
-  if (latestCompatibleVersion != null) {
-    availableVersions.push(latestCompatibleVersion)
-  }
-  if (latestVersion != null) {
-    availableVersions.push(latestVersion)
-  }
-  const currentIndex = availableVersions.indexOf(selectedVersion)
-  const newIndex =
-    (currentIndex + availableVersions.length + delta) % availableVersions.length
-  const newVersion = availableVersions[newIndex]
-  const newSelectedVersions = { ...selectedVersions }
+  const newToolVersions = { ...toolVersions }
   if (newVersion === currentVersion) {
-    delete newSelectedVersions[toolName]
+    delete newToolVersions[toolName]
   } else {
-    newSelectedVersions[toolName] = newVersion
+    newToolVersions[toolName] = newVersion
   }
-  setSelectedVersions(newSelectedVersions)
+  return newToolVersions
+}
+
+const updateToolVersions = (toolVersions, activeVersionInfo, delta) => {
+  const choices = buildAvailableVersions(activeVersionInfo)
+  const choice = getSelectedVersion(toolVersions, activeVersionInfo)
+  const newIndex = shiftIndex(choices.indexOf(choice), choices.length, delta)
+  const newVersion = choices[newIndex]
+  return applyVersionSelection(toolVersions, activeVersionInfo, newVersion)
 }
 
 export const ToolGrid = ({ versionInfo, onConfirm }) => {
+  const [toolVersions, setToolVersions] = useState({})
   const [activeIndex, setActiveIndex] = useState(0)
-  const [selectedVersions, setSelectedVersions] = useState({})
+  const [activeVersionInfo, setActiveVersionInfo] = useState(null)
+
+  useEffect(() => {
+    setActiveVersionInfo(versionInfo[activeIndex])
+  }, [activeIndex])
+
   useInput((_, key) => {
-    switch (true) {
-      case key.upArrow:
-        setActiveIndex(
-          activeIndex === 0 ? versionInfo.length - 1 : activeIndex - 1
-        )
-        break
-      case key.downArrow:
-        setActiveIndex(
-          activeIndex === versionInfo.length - 1 ? 0 : activeIndex + 1
-        )
-        break
-      case key.leftArrow:
-        changeSelectedVersion(
-          versionInfo,
-          activeIndex,
-          selectedVersions,
-          setSelectedVersions,
-          -1
-        )
-        break
-      case key.rightArrow:
-        changeSelectedVersion(
-          versionInfo,
-          activeIndex,
-          selectedVersions,
-          setSelectedVersions,
-          1
-        )
-        break
-      case key.return:
-        onConfirm(selectedVersions)
-        break
+    if (key.upArrow) {
+      setActiveIndex(shiftIndex(activeIndex, versionInfo.length, -1))
+    }
+    if (key.downArrow) {
+      setActiveIndex(shiftIndex(activeIndex, versionInfo.length, +1))
+    }
+    if (key.leftArrow) {
+      setToolVersions(updateToolVersions(toolVersions, activeVersionInfo, -1))
+    }
+    if (key.rightArrow) {
+      setToolVersions(updateToolVersions(toolVersions, activeVersionInfo, +1))
+    }
+    if (key.return) {
+      onConfirm(toolVersions)
     }
   })
+
   return (
     <Box flexDirection='column' marginY={1}>
       <Instructions />
       <ToolGridHeading />
-      {versionInfo.map(
-        (
-          { toolName, currentVersion, latestCompatibleVersion, latestVersion },
-          index
-        ) => (
-          <ToolRow
-            key={toolName}
-            toolName={toolName}
-            currentVersion={currentVersion}
-            latestCompatibleVersion={latestCompatibleVersion}
-            latestVersion={latestVersion}
-            isActive={index === activeIndex}
-            selectedVersion={selectedVersions[toolName] ?? currentVersion}
-          />
-        )
-      )}
+      {versionInfo.map((toolVersionInfo, index) => (
+        <ToolRow
+          key={toolVersionInfo.toolName}
+          toolName={toolVersionInfo.toolName}
+          currentVersion={toolVersionInfo.currentVersion}
+          latestCompatibleVersion={toolVersionInfo.latestCompatibleVersion}
+          latestVersion={toolVersionInfo.latestVersion}
+          isActive={index === activeIndex}
+          selectedVersion={getSelectedVersion(toolVersions, toolVersionInfo)}
+        />
+      ))}
     </Box>
   )
 }
