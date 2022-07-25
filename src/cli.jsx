@@ -3,10 +3,10 @@
 import 'source-map-support/register'
 
 import { render } from 'ink'
-import minimist from 'minimist'
+import mri from 'mri'
 import React from 'react'
 
 import { App } from './components/App'
 
-const { any } = minimist(process.argv.slice(2))
+const { any } = mri(process.argv.slice(2))
 render(<App allowUnstable={!!any} />)
