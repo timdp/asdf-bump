@@ -11,13 +11,10 @@ const listAllVersions = async (toolName) =>
   await runAsdf(['list', 'all', toolName])
 
 const determineLatestCompatibleVersion = (allVersions, currentVersion) => {
-  const match = /^(\d+)/.exec(currentVersion)
-  if (match == null) {
-    return null
-  }
-  const major = match[1]
+  const [major, minor] = currentVersion.split('.')
+  const prefix = (major === '0' && minor != null) ? major + '.' + minor : major
   return allVersions.find(
-    (version) => version === major || version.startsWith(major + '.')
+    (version) => version === prefix || version.startsWith(prefix + '.')
   )
 }
 
