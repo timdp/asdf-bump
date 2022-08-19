@@ -27,7 +27,8 @@
     "build": "yarn run clean && yarn run bundle",
     "clean": "shx rm -rf dist",
     "bundle": "esbuild src/cli.jsx --bundle --platform=node --external:\"./node_modules/*\" --sourcemap --outfile=dist/asdf-bump.js",
-    "prepare": "husky install && yarn run build"
+    "prepare": "husky install && yarn run build",
+    "postversion": "git push && git push --tags"
   },
   "dependencies": {
     "execa": "^5.1.1",
