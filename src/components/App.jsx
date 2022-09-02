@@ -12,7 +12,7 @@ const listAllVersions = async (toolName) =>
 
 const determineLatestCompatibleVersion = (allVersions, currentVersion) => {
   const [major, minor] = currentVersion.split('.')
-  const prefix = (major === '0' && minor != null) ? major + '.' + minor : major
+  const prefix = major === '0' && minor != null ? major + '.' + minor : major
   return allVersions.find(
     (version) => version === prefix || version.startsWith(prefix + '.')
   )
