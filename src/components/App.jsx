@@ -3,7 +3,7 @@ import pMap from 'p-map'
 import React, { useEffect, useState } from 'react'
 
 import { runAsdf } from '../asdf/run'
-import { readToolVersions, writeToolVersions } from '../asdf/tool-versions'
+import { locateToolVersions, readToolVersions, writeToolVersions } from '../asdf/tool-versions'
 import { ProgressIndicator } from './ProgressIndicator'
 import { ToolGrid } from './ToolGrid'
 
@@ -71,15 +71,21 @@ const applySelectedVersions = (versionInfo, selectedVersions) => ({
 })
 
 export const App = ({ allowUnstable }) => {
+  const [toolVersionsPath, setToolVersionsPath] = useState(null)
   const [versionInfo, setVersionInfo] = useState(null)
   const [selectedVersions, setSelectedVersions] = useState(null)
   const [resultText, setResultText] = useState(null)
 
+  useEffect(() => locateToolVersions().then(setToolVersionsPath), [])
+
   useEffect(() => {
-    readToolVersions()
+    if (toolVersionsPath == null) {
+      return
+    }
+    readToolVersions(toolVersionsPath)
       .then((toolVersions) => getVersionInfo(toolVersions, allowUnstable))
       .then(setVersionInfo)
-  }, [])
+  }, [toolVersionsPath])
 
   useEffect(() => {
     if (versionInfo == null) {
@@ -103,9 +109,7 @@ export const App = ({ allowUnstable }) => {
       return
     }
     const toolVersions = applySelectedVersions(versionInfo, selectedVersions)
-    writeToolVersions(toolVersions).then(() =>
-      setResultText('Update completed.')
-    )
+    writeToolVersions(toolVersionsPath, toolVersions).then(() => setResultText('Update completed.'))
   }, [selectedVersions])
 
   if (resultText != null) {

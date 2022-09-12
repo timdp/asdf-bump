@@ -4,11 +4,18 @@ import { EOL } from 'node:os'
 import findUp from 'find-up'
 import splitLines from 'split-lines'
 
-const getToolVersionsPath = () => findUp.sync('.tool-versions')
+export const locateToolVersions = async () => {
+  const cwd = process.cwd()
+  const toolVersionsPath = await findUp('.tool-versions', { cwd })
+  if (toolVersionsPath == null) {
+    throw new Error(`Failed to locate .tool-versions in ${cwd}`)
+  }
+  return toolVersionsPath
+}
 
-export const readToolVersions = async () => {
+export const readToolVersions = async (toolVersionsPath) => {
   const versions = {}
-  const data = await readFile(getToolVersionsPath(), 'utf8')
+  const data = await readFile(toolVersionsPath, 'utf8')
   for (const line of splitLines(data)) {
     const match = /(\S+)\s+(\S+)/.exec(line)
     if (match != null) {
@@ -18,9 +25,9 @@ export const readToolVersions = async () => {
   return versions
 }
 
-export const writeToolVersions = async (versions) => {
+export const writeToolVersions = async (toolVersionsPath, versions) => {
   const data = Object.entries(versions)
     .map(([toolName, version]) => `${toolName} ${version}${EOL}`)
     .join('')
-  await writeFile(getToolVersionsPath(), data, 'utf8')
+  await writeFile(toolVersionsPath, data, 'utf8')
 }
