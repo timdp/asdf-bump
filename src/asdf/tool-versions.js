@@ -1,9 +1,10 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { EOL } from 'node:os'
-import { resolve } from 'node:path'
+
+import findUp from 'find-up'
 import splitLines from 'split-lines'
 
-const getToolVersionsPath = () => resolve(process.cwd(), '.tool-versions')
+const getToolVersionsPath = () => findUp.sync('.tool-versions')
 
 export const readToolVersions = async () => {
   const versions = {}
