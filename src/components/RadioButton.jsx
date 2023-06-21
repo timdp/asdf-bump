@@ -5,7 +5,7 @@ import {
   COLOR_RADIO_BUTTON_UNCHECKED,
   RADIO_BUTTON_CHECKED,
   RADIO_BUTTON_UNCHECKED
-} from '../constants'
+} from '../constants.js'
 
 export const RadioButton = ({ color, isChecked }) => (
   <Text color={isChecked ? color : COLOR_RADIO_BUTTON_UNCHECKED}>

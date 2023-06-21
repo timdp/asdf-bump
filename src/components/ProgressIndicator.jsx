@@ -2,7 +2,7 @@ import { Box, Text } from 'ink'
 import Spinner from 'ink-spinner'
 import React from 'react'
 
-import { COLOR_SPINNER } from '../constants'
+import { COLOR_SPINNER } from '../constants.js'
 
 export const ProgressIndicator = ({ children }) => (
   <Box>

@@ -2,13 +2,17 @@ import { Text } from 'ink'
 import pMap from 'p-map'
 import React, { useEffect, useState } from 'react'
 
-import { runAsdf } from '../asdf/run'
-import { locateToolVersions, readToolVersions, writeToolVersions } from '../asdf/tool-versions'
-import { ProgressIndicator } from './ProgressIndicator'
-import { ToolGrid } from './ToolGrid'
+import { runAsdf } from '../asdf/run.js'
+import {
+  locateToolVersions,
+  readToolVersions,
+  writeToolVersions
+} from '../asdf/tool-versions.js'
+import { ProgressIndicator } from './ProgressIndicator.jsx'
+import { ToolGrid } from './ToolGrid.jsx'
 
-const listAllVersions = async (toolName) =>
-  await runAsdf(['list', 'all', toolName])
+const listAllVersions = async (packageName) =>
+  await runAsdf(['list', 'all', packageName])
 
 const determineLatestCompatibleVersion = (allVersions, currentVersion) => {
   const [major, minor] = currentVersion.split('.')
@@ -24,8 +28,8 @@ const filterVersions = (allVersions) =>
 const getVersionInfo = async (toolVersions, allowUnstable) => {
   const versionInfo = await pMap(
     Object.entries(toolVersions),
-    async ([toolName, currentVersion]) => {
-      const allVersions = await listAllVersions(toolName)
+    async ([packageName, currentVersion]) => {
+      const allVersions = await listAllVersions(packageName)
       const allowedVersions = allowUnstable
         ? allVersions
         : filterVersions(allVersions)
@@ -36,7 +40,7 @@ const getVersionInfo = async (toolVersions, allowUnstable) => {
       )
       const latestVersion = allowedVersions[0]
       return {
-        toolName,
+        packageName,
         currentVersion,
         latestCompatibleVersion:
           latestCompatibleVersion !== currentVersion
@@ -50,7 +54,7 @@ const getVersionInfo = async (toolVersions, allowUnstable) => {
       }
     }
   )
-  versionInfo.sort((a, b) => a.toolName.localeCompare(b.toolName))
+  versionInfo.sort((a, b) => a.packageName.localeCompare(b.packageName))
   return versionInfo
 }
 
@@ -62,8 +66,8 @@ const updatesAvailable = (versionInfo) =>
 
 const applySelectedVersions = (versionInfo, selectedVersions) => ({
   ...Object.fromEntries(
-    versionInfo.map(({ toolName, currentVersion }) => [
-      toolName,
+    versionInfo.map(({ packageName, currentVersion }) => [
+      packageName,
       currentVersion
     ])
   ),
@@ -76,7 +80,9 @@ export const App = ({ allowUnstable }) => {
   const [selectedVersions, setSelectedVersions] = useState(null)
   const [resultText, setResultText] = useState(null)
 
-  useEffect(() => locateToolVersions().then(setToolVersionsPath), [])
+  useEffect(() => {
+    locateToolVersions().then(setToolVersionsPath)
+  }, [])
 
   useEffect(() => {
     if (toolVersionsPath == null) {
@@ -109,7 +115,9 @@ export const App = ({ allowUnstable }) => {
       return
     }
     const toolVersions = applySelectedVersions(versionInfo, selectedVersions)
-    writeToolVersions(toolVersionsPath, toolVersions).then(() => setResultText('Update completed.'))
+    writeToolVersions(toolVersionsPath, toolVersions).then(() =>
+      setResultText('Update completed.')
+    )
   }, [selectedVersions])
 
   if (resultText != null) {

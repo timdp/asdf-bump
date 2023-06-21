@@ -1,4 +1,4 @@
-import execa from 'execa'
+import { execa } from 'execa'
 import splitLines from 'split-lines'
 
 export const runAsdf = async (args) => {

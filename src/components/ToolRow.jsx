@@ -5,17 +5,17 @@ import {
   COLOR_LATEST_COMPATIBLE_VERSION,
   COLOR_LATEST_VERSION,
   COLOR_MARKER,
-  COLOR_TOOL_NAME,
+  COLOR_PACKAGE_NAME,
   MARKER,
   WIDTH_MARKER,
-  WIDTH_NAME,
+  WIDTH_PACKAGE_NAME,
   WIDTH_VERSION
-} from '../constants'
-import { VersionChoice } from './VersionChoice'
+} from '../constants.js'
+import { VersionChoice } from './VersionChoice.jsx'
 
 export const ToolRow = ({
   isActive,
-  toolName,
+  packageName,
   currentVersion,
   latestCompatibleVersion,
   latestVersion,
@@ -29,9 +29,9 @@ export const ToolRow = ({
         </Text>
       )}
     </Box>
-    <Box width={WIDTH_NAME}>
-      <Text color={COLOR_TOOL_NAME} bold wrap='truncate'>
-        {toolName}
+    <Box width={WIDTH_PACKAGE_NAME}>
+      <Text color={COLOR_PACKAGE_NAME} bold wrap='truncate'>
+        {packageName}
       </Text>
     </Box>
     <Box width={WIDTH_VERSION}>

@@ -4,28 +4,24 @@ import React from 'react'
 import {
   COLOR_HEADING,
   WIDTH_MARKER,
-  WIDTH_NAME,
+  WIDTH_PACKAGE_NAME,
   WIDTH_VERSION
-} from '../constants'
+} from '../constants.js'
+
+export const ColumnHeading = ({ width, children }) => (
+  <Box width={width}>
+    <Text color={COLOR_HEADING} bold underline>
+      {children}
+    </Text>
+  </Box>
+)
 
 export const ToolGridHeading = () => (
   <Box marginBottom={1}>
     <Box width={WIDTH_MARKER} />
-    <Box width={WIDTH_NAME} />
-    <Box width={WIDTH_VERSION}>
-      <Text color={COLOR_HEADING} bold underline>
-        Current
-      </Text>
-    </Box>
-    <Box width={WIDTH_VERSION}>
-      <Text color={COLOR_HEADING} bold underline>
-        Compatible
-      </Text>
-    </Box>
-    <Box width={WIDTH_VERSION}>
-      <Text color={COLOR_HEADING} bold underline>
-        Latest
-      </Text>
-    </Box>
+    <Box width={WIDTH_PACKAGE_NAME} />
+    <ColumnHeading width={WIDTH_VERSION}>Current</ColumnHeading>
+    <ColumnHeading width={WIDTH_VERSION}>Compatible</ColumnHeading>
+    <ColumnHeading width={WIDTH_VERSION}>Latest</ColumnHeading>
   </Box>
 )

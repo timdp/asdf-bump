@@ -1,7 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import { EOL } from 'node:os'
 
-import findUp from 'find-up'
+import { findUp } from 'find-up'
 import splitLines from 'split-lines'
 
 export const locateToolVersions = async () => {
@@ -27,7 +27,7 @@ export const readToolVersions = async (toolVersionsPath) => {
 
 export const writeToolVersions = async (toolVersionsPath, versions) => {
   const data = Object.entries(versions)
-    .map(([toolName, version]) => `${toolName} ${version}${EOL}`)
+    .map(([packageName, version]) => `${packageName} ${version}${EOL}`)
     .join('')
   await writeFile(toolVersionsPath, data, 'utf8')
 }

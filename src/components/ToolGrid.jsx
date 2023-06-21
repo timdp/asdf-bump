@@ -1,9 +1,9 @@
 import { Box, useInput } from 'ink'
 import React, { useEffect, useState } from 'react'
 
-import { Instructions } from './Instructions'
-import { ToolGridHeading } from './ToolGridHeading'
-import { ToolRow } from './ToolRow'
+import { Instructions } from './Instructions.jsx'
+import { ToolGridHeading } from './ToolGridHeading.jsx'
+import { ToolRow } from './ToolRow.jsx'
 
 const isNotNullish = (value) => value != null
 
@@ -16,19 +16,19 @@ const buildAvailableVersions = ({
 }) =>
   [currentVersion, latestCompatibleVersion, latestVersion].filter(isNotNullish)
 
-const getSelectedVersion = (toolVersions, { toolName, currentVersion }) =>
-  toolVersions[toolName] ?? currentVersion
+const getSelectedVersion = (toolVersions, { packageName, currentVersion }) =>
+  toolVersions[packageName] ?? currentVersion
 
 const applyVersionSelection = (
   toolVersions,
-  { toolName, currentVersion },
+  { packageName, currentVersion },
   newVersion
 ) => {
   const newToolVersions = { ...toolVersions }
   if (newVersion === currentVersion) {
-    delete newToolVersions[toolName]
+    delete newToolVersions[packageName]
   } else {
-    newToolVersions[toolName] = newVersion
+    newToolVersions[packageName] = newVersion
   }
   return newToolVersions
 }
@@ -74,8 +74,8 @@ export const ToolGrid = ({ versionInfo, onConfirm }) => {
       <ToolGridHeading />
       {versionInfo.map((toolVersionInfo, index) => (
         <ToolRow
-          key={toolVersionInfo.toolName}
-          toolName={toolVersionInfo.toolName}
+          key={toolVersionInfo.packageName}
+          packageName={toolVersionInfo.packageName}
           currentVersion={toolVersionInfo.currentVersion}
           latestCompatibleVersion={toolVersionInfo.latestCompatibleVersion}
           latestVersion={toolVersionInfo.latestVersion}

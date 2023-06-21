@@ -1,7 +1,7 @@
 import { Box, Text } from 'ink'
 import React from 'react'
 
-import { RadioButton } from './RadioButton'
+import { RadioButton } from './RadioButton.jsx'
 
 export const VersionChoice = ({ color, children, isSelected }) => (
   <Box>

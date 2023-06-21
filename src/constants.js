@@ -10,13 +10,13 @@ export const COLOR_SPINNER = CYAN
 export const COLOR_KEY = CYAN
 export const COLOR_HEADING = GRAY
 export const COLOR_MARKER = CYAN
-export const COLOR_TOOL_NAME = ORANGE
+export const COLOR_PACKAGE_NAME = ORANGE
 export const COLOR_LATEST_COMPATIBLE_VERSION = GREEN
 export const COLOR_LATEST_VERSION = YELLOW
 export const COLOR_RADIO_BUTTON_UNCHECKED = GRAY
 
 export const WIDTH_MARKER = 2
-export const WIDTH_NAME = 48
+export const WIDTH_PACKAGE_NAME = 48
 export const WIDTH_VERSION = 16
 
 export const MARKER = '▸'
