@@ -1,4 +1,3 @@
-import { Text } from 'ink'
 import pMap from 'p-map'
 import React, { useEffect, useState } from 'react'
 
@@ -8,6 +7,7 @@ import {
   readToolVersions,
   writeToolVersions
 } from '../asdf/tool-versions.js'
+import { Result } from '../constants.js'
 import { ProgressIndicator } from './ProgressIndicator.jsx'
 import { ToolGrid } from './ToolGrid.jsx'
 
@@ -74,11 +74,10 @@ const applySelectedVersions = (versionInfo, selectedVersions) => ({
   ...selectedVersions
 })
 
-export const App = ({ allowUnstable }) => {
+export const App = ({ allowUnstable, onDone }) => {
   const [toolVersionsPath, setToolVersionsPath] = useState(null)
   const [versionInfo, setVersionInfo] = useState(null)
   const [selectedVersions, setSelectedVersions] = useState(null)
-  const [resultText, setResultText] = useState(null)
 
   useEffect(() => {
     locateToolVersions().then(setToolVersionsPath)
@@ -91,38 +90,34 @@ export const App = ({ allowUnstable }) => {
     readToolVersions(toolVersionsPath)
       .then((toolVersions) => getVersionInfo(toolVersions, allowUnstable))
       .then(setVersionInfo)
-  }, [toolVersionsPath])
+  }, [toolVersionsPath, allowUnstable])
 
   useEffect(() => {
     if (versionInfo == null) {
       return
     }
     if (versionInfo.length === 0) {
-      setResultText('No tools configured.')
+      onDone(Result.NO_TOOLS_CONFIGURED)
       return
     }
     if (!updatesAvailable(versionInfo)) {
-      setResultText('All tools up to date.')
+      onDone(Result.ALL_TOOLS_UP_TO_DATE)
     }
-  }, [versionInfo])
+  }, [versionInfo, onDone])
 
   useEffect(() => {
     if (selectedVersions == null) {
       return
     }
     if (Object.keys(selectedVersions).length === 0) {
-      setResultText('Nothing to update.')
+      onDone(Result.NOTHING_TO_UPDATE)
       return
     }
     const toolVersions = applySelectedVersions(versionInfo, selectedVersions)
-    writeToolVersions(toolVersionsPath, toolVersions).then(() =>
-      setResultText('Update completed.')
-    )
-  }, [selectedVersions])
-
-  if (resultText != null) {
-    return <Text>{resultText}</Text>
-  }
+    writeToolVersions(toolVersionsPath, toolVersions).then(() => {
+      onDone(Result.UPDATE_COMPLETED)
+    })
+  }, [selectedVersions, toolVersionsPath, versionInfo, onDone])
 
   if (selectedVersions != null) {
     return <ProgressIndicator>Saving...</ProgressIndicator>

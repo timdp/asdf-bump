@@ -48,7 +48,7 @@ export const ToolGrid = ({ versionInfo, onConfirm }) => {
 
   useEffect(() => {
     setActiveVersionInfo(versionInfo[activeIndex])
-  }, [activeIndex])
+  }, [activeIndex, versionInfo])
 
   useInput((_, key) => {
     if (key.upArrow) {

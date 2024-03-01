@@ -22,3 +22,10 @@ export const WIDTH_VERSION = 16
 export const MARKER = '▸'
 export const RADIO_BUTTON_CHECKED = '◉'
 export const RADIO_BUTTON_UNCHECKED = '○'
+
+export const Result = Object.freeze({
+  NO_TOOLS_CONFIGURED: 0,
+  ALL_TOOLS_UP_TO_DATE: 1,
+  NOTHING_TO_UPDATE: 2,
+  UPDATE_COMPLETED: 3
+})
