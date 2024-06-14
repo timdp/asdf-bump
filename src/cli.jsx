@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import 'source-map-support/register'
+import 'source-map-support/register.js'
 
 import { render } from 'ink'
 import mri from 'mri'
