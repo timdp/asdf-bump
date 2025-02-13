@@ -1,7 +1,7 @@
 {
   "name": "asdf-bump",
   "description": "Interactive upgrades for asdf.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "license": "MIT",
   "repository": {
