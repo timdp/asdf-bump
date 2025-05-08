@@ -9,7 +9,7 @@ import {
   MARKER,
   WIDTH_MARKER,
   WIDTH_PACKAGE_NAME,
-  WIDTH_VERSION
+  WIDTH_VERSION,
 } from '../constants.js'
 import { VersionChoice } from './VersionChoice.jsx'
 
@@ -19,7 +19,7 @@ export const ToolRow = ({
   currentVersion,
   latestCompatibleVersion,
   latestVersion,
-  selectedVersion
+  selectedVersion,
 }) => (
   <Box>
     <Box width={WIDTH_MARKER}>

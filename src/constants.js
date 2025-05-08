@@ -27,5 +27,5 @@ export const Result = Object.freeze({
   NO_TOOLS_CONFIGURED: 0,
   ALL_TOOLS_UP_TO_DATE: 1,
   NOTHING_TO_UPDATE: 2,
-  UPDATE_COMPLETED: 3
+  UPDATE_COMPLETED: 3,
 })

@@ -5,7 +5,7 @@ import {
   COLOR_HEADING,
   WIDTH_MARKER,
   WIDTH_PACKAGE_NAME,
-  WIDTH_VERSION
+  WIDTH_VERSION,
 } from '../constants.js'
 
 export const ColumnHeading = ({ width, children }) => (

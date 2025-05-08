@@ -1,18 +1,15 @@
 import pMap from 'p-map'
 import React, { useEffect, useState } from 'react'
 
-import { runAsdf } from '../asdf/run.js'
+import { Result } from '../constants.js'
+import { runList } from '../run.js'
 import {
   locateToolVersions,
   readToolVersions,
-  writeToolVersions
-} from '../asdf/tool-versions.js'
-import { Result } from '../constants.js'
+  writeToolVersions,
+} from '../tool-versions.js'
 import { ProgressIndicator } from './ProgressIndicator.jsx'
 import { ToolGrid } from './ToolGrid.jsx'
-
-const listAllVersions = async (packageName) =>
-  await runAsdf(['list', 'all', packageName])
 
 const determineLatestCompatibleVersion = (allVersions, currentVersion) => {
   const [major, minor] = currentVersion.split('.')
@@ -25,11 +22,12 @@ const determineLatestCompatibleVersion = (allVersions, currentVersion) => {
 const filterVersions = (allVersions) =>
   allVersions.filter((version) => /^\d+(\.\d+)*$/.test(version))
 
-const getVersionInfo = async (toolVersions, allowUnstable) => {
+const getVersionInfo = async (toolVersions, allowUnstable, useMise) => {
+  const runListImpl = runList(useMise)
   const versionInfo = await pMap(
     Object.entries(toolVersions),
     async ([packageName, currentVersion]) => {
-      const allVersions = await listAllVersions(packageName)
+      const allVersions = await runListImpl(packageName)
       const allowedVersions = allowUnstable
         ? allVersions
         : filterVersions(allVersions)
@@ -50,7 +48,7 @@ const getVersionInfo = async (toolVersions, allowUnstable) => {
           latestVersion !== currentVersion &&
           latestVersion !== latestCompatibleVersion
             ? latestVersion
-            : null
+            : null,
       }
     }
   )
@@ -68,13 +66,13 @@ const applySelectedVersions = (versionInfo, selectedVersions) => ({
   ...Object.fromEntries(
     versionInfo.map(({ packageName, currentVersion }) => [
       packageName,
-      currentVersion
+      currentVersion,
     ])
   ),
-  ...selectedVersions
+  ...selectedVersions,
 })
 
-export const App = ({ allowUnstable, onDone }) => {
+export const App = ({ allowUnstable, useMise, onDone }) => {
   const [toolVersionsPath, setToolVersionsPath] = useState(null)
   const [versionInfo, setVersionInfo] = useState(null)
   const [selectedVersions, setSelectedVersions] = useState(null)
@@ -88,9 +86,11 @@ export const App = ({ allowUnstable, onDone }) => {
       return
     }
     readToolVersions(toolVersionsPath)
-      .then((toolVersions) => getVersionInfo(toolVersions, allowUnstable))
+      .then((toolVersions) =>
+        getVersionInfo(toolVersions, allowUnstable, useMise)
+      )
       .then(setVersionInfo)
-  }, [toolVersionsPath, allowUnstable])
+  }, [toolVersionsPath, allowUnstable, useMise])
 
   useEffect(() => {
     if (versionInfo == null) {

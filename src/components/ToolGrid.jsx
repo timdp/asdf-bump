@@ -12,7 +12,7 @@ const shiftIndex = (index, total, delta) => (index + delta + total) % total
 const buildAvailableVersions = ({
   currentVersion,
   latestCompatibleVersion,
-  latestVersion
+  latestVersion,
 }) =>
   [currentVersion, latestCompatibleVersion, latestVersion].filter(isNotNullish)
 
