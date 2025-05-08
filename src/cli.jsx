@@ -28,7 +28,7 @@ const handleResult = async (result, install) => {
     return
   }
   console.info('Installing new versions...')
-  await runAsdf(['install'], true, true)
+  await runAsdf(['install'], true)
   console.info('Installation complete.')
 }
 
